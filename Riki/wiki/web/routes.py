@@ -2,7 +2,7 @@
     Routes
     ~~~~~~
 """
-from flask import Blueprint
+from flask import Blueprint, current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -18,10 +18,10 @@ from wiki.web.forms import EditorForm
 from wiki.web.forms import LoginForm
 from wiki.web.forms import SearchForm
 from wiki.web.forms import URLForm
+from wiki.web.forms import SignUpForm
 from wiki.web import current_wiki
 from wiki.web import current_users
-from wiki.web.user import protect
-
+from wiki.web.user import protect, UserManager
 
 bp = Blueprint('wiki', __name__)
 
@@ -155,10 +155,21 @@ def user_index():
     pass
 
 
-@bp.route('/user/create/')
-def user_create():
-    pass
+@bp.route('/user/signup/')
+def user_signup():
+    form = SignUpForm()
+    return render_template('signup.html', form=form)
 
+@bp.route('/user/create/', methods=['POST'])
+def user_create():
+    username = request.form.get('name')
+    password = request.form.get('password')
+    m = UserManager(current_app.config['USER_DIR'])
+    if not m.add_user(username, password, authentication_method='cleartext'):
+        flash("Error creating user. Try again.", "error")
+        return redirect(url_for('wiki.user_signup'))
+    else:
+        return redirect(url_for('wiki.user_login'))
 
 @bp.route('/user/<int:user_id>/')
 def user_admin(user_id):
