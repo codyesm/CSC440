@@ -40,6 +40,12 @@ class EditorForm(Form):
     tags = TextField('')
 
 
+class ConvertForm(Form):
+    title = TextField('', [InputRequired()])
+    body = TextAreaField('', [InputRequired()])
+    tags = TextField('')
+
+
 class LoginForm(Form):
     name = TextField('', [InputRequired()])
     password = PasswordField('', [InputRequired()])
