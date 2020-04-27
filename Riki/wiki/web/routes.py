@@ -19,6 +19,7 @@ from wiki.web.forms import LoginForm
 from wiki.web.forms import SearchForm
 from wiki.web.forms import URLForm
 from wiki.web.forms import SignUpForm
+from wiki.web.forms import ConvertForm
 from wiki.web import current_wiki
 from wiki.web import current_users
 from wiki.web.user import protect, UserManager
@@ -73,6 +74,19 @@ def edit(url):
         return redirect(url_for('wiki.display', url=url))
     return render_template('editor.html', form=form, page=page)
 
+@bp.route('/convert/<path:url>/', methods=['GET', 'POST'])
+@protect
+def convert(url):
+    page = current_wiki.get(url)
+    form = ConvertForm(obj=page)
+    if form.validate_on_submit():
+        if not page:
+            page = current_wiki.get_bare(url)
+        form.populate_obj(page)
+        page.save()
+        flash('"%s" was saved.' % page.title, 'success')
+        return redirect(url_for('wiki.display', url=url))
+    return render_template('editor.html', form=form, page=page)
 
 @bp.route('/preview/', methods=['POST'])
 @protect
