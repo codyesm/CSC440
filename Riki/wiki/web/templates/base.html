@@ -70,6 +70,14 @@
 				<div class="span3">
 					{% block sidebar %}
 					{% endblock sidebar %}
+					{% block twitter %}
+					{% if page%}
+						<a class="twitter-timeline" href="https://twitter.com/{{page.title}}?ref_src=twsrc%5Etfw">Tweets by {{page.title}}</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+					{% else %}
+						<a class="twitter-timeline" href="https://twitter.com/riki21392521?ref_src=twsrc%5Etfw">Tweets by Riki</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+					{% endif %}
+						
+					{% endblock twitter%}
 				</div>
 			</div>
 		</div>
